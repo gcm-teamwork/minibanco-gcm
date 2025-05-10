@@ -4,7 +4,7 @@ Este projeto tem como objetivo simular o funcionamento básico de uma conta banc
 
 ## Integrantes
 - Gabriele Queiroz Rêgo, github `@gabrielerego123`
-- Ana Maria Gomes Holanda, github `anamgholandadev`
+- Ana Maria Gomes Holanda, github `@anamgholandadev`
 
 ## Linguagem de Programação
 No projeto, é utilizado a linguagem de programação Java. O frontend será via console.
