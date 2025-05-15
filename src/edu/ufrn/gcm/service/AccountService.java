@@ -12,4 +12,13 @@ public class AccountService {
     public AccountService(){
         this.accounts = new ArrayList<>();
     }
+
+    public boolean createAccount(String number){
+        if(number.isEmpty() ){
+            return false;
+        }
+        this.accounts.add(new AccountModel(number, 0.0));
+        return true;
+    }
+
 }
