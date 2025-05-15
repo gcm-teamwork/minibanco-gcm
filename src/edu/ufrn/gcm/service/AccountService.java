@@ -21,4 +21,14 @@ public class AccountService {
         return true;
     }
 
+    public AccountModel getAccountByNumber(String number){
+        for(AccountModel account : this.accounts){
+            if(account.getNumber().equals(number)){
+                return account;
+            }
+        }
+        return null;
+    }
+
+
 }
