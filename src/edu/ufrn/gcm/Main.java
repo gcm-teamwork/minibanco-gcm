@@ -20,14 +20,20 @@ class Main {
         do {
             System.out.println(menuOptions);
             option = scanner.nextInt();
+            String number = "";
             switch (option) {
                 case 1:
-                    System.out.println("Informe o número da conta");
-                    String number = scanner.next();
+                    System.out.println("Informe o número da conta para criar:");
+                    number = scanner.next();
                     String result = controller.createAccount(number);
                     System.out.println(result);
                     break;
-
+                case 2:
+                    System.out.println("Informe o número da conta para consultar:");
+                    number = scanner.next();
+                    String account = controller.getAccountByNumber(number);
+                    System.out.println(account);
+                    break;
             }
 
         } while (option != 0);
