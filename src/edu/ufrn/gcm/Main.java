@@ -11,10 +11,10 @@ class Main {
         int option = -1;
         String menuOptions = "Olá, Seja Bem-vindo ao Minibanco\nEscolha uma das opções abaixo:\n" +
                 "1 para Cadatrar conta\n" +
-                "2 para consultar saldo de uma conta\n" +
-                "3 para crédito\n" +
-                "4 para débito\n" +
-                "5 para transferência\n" +
+                "2 para Consultar saldo de uma conta\n" +
+                "3 para Crédito\n" +
+                "4 para Débito\n" +
+                "5 para Transferência\n" +
                 "0 para sair\nDigite: ";
 
         do {
@@ -34,6 +34,15 @@ class Main {
                     String account = controller.getAccountByNumber(number);
                     System.out.println(account);
                     break;
+                case 3:
+                    System.out.println("Informe o número da conta:");
+                    number = scanner.next();
+                    System.out.println("Informe o valor do crédito:");
+                    Double value = scanner.nextDouble();
+                    String creditResult = controller.credit(number, value);
+                    System.out.println(creditResult);
+                    break;
+
             }
 
         } while (option != 0);
