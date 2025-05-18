@@ -42,4 +42,13 @@ public class AccountController {
         }
     }
 
+    public String transfer(String from, String to, Double value) {
+        boolean transferred = service.transfer(from, to, value);
+        if (transferred) {
+            return "Transferência realizada com sucesso!";
+        } else {
+            return "Erro ao realizar transferência. Verifique os dados informados.";
+        }
+    }
+
 }
