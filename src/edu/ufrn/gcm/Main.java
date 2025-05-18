@@ -42,6 +42,14 @@ class Main {
                         String creditResult = controller.credit(number, value);
                         System.out.println(creditResult);
                         break;
+                    case 4:
+                        System.out.println("Informe o número da conta:");
+                        number = scanner.next();
+                        System.out.println("Informe o valor do débito:");
+                        Double debitValue = scanner.nextDouble();
+                        String debitResult = controller.debit(number, debitValue);
+                        System.out.println(debitResult);
+                        break;
 
                 }
 
