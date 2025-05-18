@@ -39,4 +39,13 @@ public class AccountService {
         return false;
     }
 
+    public boolean debit(String number, Double value) {
+        AccountModel account = getAccountByNumber(number);
+        if (account != null && value != null && value > 0) {
+            account.setTotal(account.getTotal() - value);
+            return true;
+        }
+        return false;
+    }
+
 }

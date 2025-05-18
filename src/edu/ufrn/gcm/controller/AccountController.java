@@ -33,4 +33,13 @@ public class AccountController {
         }
     }
 
+    public String debit(String number, Double value) {
+        boolean debited = service.debit(number, value);
+        if (debited) {
+            return "Débito realizado com sucesso!";
+        } else {
+            return "Erro ao realizar débito. Verifique os dados informados.";
+        }
+    }
+
 }
