@@ -48,4 +48,16 @@ public class AccountService {
         return false;
     }
 
+    public boolean transfer(String fromNumber, String toNumber, Double value) {
+        AccountModel fromAccount = getAccountByNumber(fromNumber);
+        AccountModel toAccount = getAccountByNumber(toNumber);
+
+        if (fromAccount != null && toAccount != null && value != null && value > 0) {
+            fromAccount.setTotal(fromAccount.getTotal() - value);
+            toAccount.setTotal(toAccount.getTotal() + value);
+            return true;
+        }
+        return false;
+    }
+
 }

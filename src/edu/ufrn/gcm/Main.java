@@ -50,6 +50,16 @@ class Main {
                         String debitResult = controller.debit(number, debitValue);
                         System.out.println(debitResult);
                         break;
+                    case 5:
+                        System.out.println("Informe o número da conta de origem:");
+                        String from = scanner.next();
+                        System.out.println("Informe o número da conta de destino:");
+                        String to = scanner.next();
+                        System.out.println("Informe o valor da transferência:");
+                        Double transferValue = scanner.nextDouble();
+                        String transferResult = controller.transfer(from, to, transferValue);
+                        System.out.println(transferResult);
+                        break;
 
                 }
 
