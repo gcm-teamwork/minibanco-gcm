@@ -1,6 +1,8 @@
 package edu.ufrn.gcm.service;
 
 import edu.ufrn.gcm.model.AccountModel;
+import edu.ufrn.gcm.model.BonusAccount;
+import edu.ufrn.gcm.utils.TypeAccountEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +15,16 @@ public class AccountService {
         this.accounts = new ArrayList<>();
     }
 
-    public boolean createAccount(String number) {
+    public boolean createAccount(String number, TypeAccountEnum typeAccount) {
         if (number.isEmpty()) {
             return false;
         }
-        this.accounts.add(new AccountModel(number, 0.0));
+        if (typeAccount == TypeAccountEnum.BONUS) {
+            BonusAccount bonus = new BonusAccount(number, 0.0);
+            this.accounts.add(bonus);
+        } else {
+            this.accounts.add(new AccountModel(number, 0.0));
+        }
         return true;
     }
 
@@ -34,6 +41,9 @@ public class AccountService {
         AccountModel account = getAccountByNumber(number);
         if (account != null && value != null && value > 0) {
             account.setTotal(account.getTotal() + value);
+            if (account instanceof BonusAccount) {
+                calculateScore((BonusAccount) account, value, 100);
+            }
             return true;
         }
         return false;
@@ -42,7 +52,7 @@ public class AccountService {
     public boolean debit(String number, Double value) {
         AccountModel account = getAccountByNumber(number);
         if (account != null && value != null && value > 0) {
-            if(value > account.getTotal()){
+            if (value > account.getTotal()) {
                 return false;
             }
             account.setTotal(account.getTotal() - value);
@@ -51,16 +61,25 @@ public class AccountService {
         return false;
     }
 
+    private void calculateScore(BonusAccount bonus, Double value, int baseValue) {
+        int debit = value.intValue();
+        int score = debit / baseValue;
+        bonus.increaseScore(score);
+    }
+
     public boolean transfer(String fromNumber, String toNumber, Double value) {
         AccountModel fromAccount = getAccountByNumber(fromNumber);
         AccountModel toAccount = getAccountByNumber(toNumber);
 
         if (fromAccount != null && toAccount != null && value != null && value > 0) {
-            if(value > fromAccount.getTotal()){
+            if (value > fromAccount.getTotal()) {
                 return false;
             }
             fromAccount.setTotal(fromAccount.getTotal() - value);
             toAccount.setTotal(toAccount.getTotal() + value);
+            if (toAccount instanceof BonusAccount) {
+                calculateScore((BonusAccount) toAccount, value, 200);
+            }
             return true;
         }
         return false;
