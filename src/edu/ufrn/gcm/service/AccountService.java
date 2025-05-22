@@ -32,7 +32,7 @@ public class AccountService {
 
     public boolean credit(String number, Double value) {
         AccountModel account = getAccountByNumber(number);
-        if (account != null && value != null && value > 0) {
+        if (account != null && value != null) {
             account.setTotal(account.getTotal() + value);
             return true;
         }
@@ -41,8 +41,8 @@ public class AccountService {
 
     public boolean debit(String number, Double value) {
         AccountModel account = getAccountByNumber(number);
-        if (account != null && value != null && value > 0) {
-            if(value > account.getTotal()){
+        if (account != null && value != null) {
+            if (value > account.getTotal()) {
                 return false;
             }
             account.setTotal(account.getTotal() - value);
@@ -55,8 +55,8 @@ public class AccountService {
         AccountModel fromAccount = getAccountByNumber(fromNumber);
         AccountModel toAccount = getAccountByNumber(toNumber);
 
-        if (fromAccount != null && toAccount != null && value != null && value > 0) {
-            if(value > fromAccount.getTotal()){
+        if (fromAccount != null && toAccount != null && value != null) {
+            if (value > fromAccount.getTotal()) {
                 return false;
             }
             fromAccount.setTotal(fromAccount.getTotal() - value);
