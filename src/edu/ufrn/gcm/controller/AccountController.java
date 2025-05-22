@@ -21,10 +21,10 @@ public class AccountController {
     public String getAccountByNumber(String number) {
         AccountModel accountModel = this.service.getAccountByNumber(number);
         if (accountModel != null) {
-            String accountData =  "O saldo da conta " + accountModel.getNumber() + " é R$" + accountModel.getTotal();
-            if(accountModel instanceof BonusAccount) {
+            String accountData = "O saldo da conta " + accountModel.getNumber() + " é R$" + accountModel.getTotal();
+            if (accountModel instanceof BonusAccount) {
                 BonusAccount bonusAccount = (BonusAccount) accountModel;
-                String score = "A pontuação da conta é " +  bonusAccount.getScore();
+                String score = "A pontuação da conta é " + bonusAccount.getScore();
                 accountData += "\n" + score;
             }
             return accountData;
@@ -59,13 +59,20 @@ public class AccountController {
         }
     }
 
-    private TypeAccountEnum getTypeAccount(int typeAccount){
-        if(typeAccount == 1){
-            return TypeAccountEnum.REGULAR;
-        }else if(typeAccount == 2){
-            return TypeAccountEnum.BONUS;
+    private TypeAccountEnum getTypeAccount(int typeAccount) {
+        switch (typeAccount) {
+            case 2:
+                return TypeAccountEnum.BONUS;
+            case 3:
+                return TypeAccountEnum.SAVINGS;
+            default:
+                return TypeAccountEnum.REGULAR;
         }
-        return TypeAccountEnum.REGULAR;
+    }
+
+    public String renderInterest(Double rate) {
+        service.renderInterest(rate);
+        return "Juros aplicados com sucesso em todas as contas poupança.";
     }
 
 }

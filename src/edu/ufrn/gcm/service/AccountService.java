@@ -2,6 +2,7 @@ package edu.ufrn.gcm.service;
 
 import edu.ufrn.gcm.model.AccountModel;
 import edu.ufrn.gcm.model.BonusAccount;
+import edu.ufrn.gcm.model.SavingsAccount;
 import edu.ufrn.gcm.utils.TypeAccountEnum;
 
 import java.util.ArrayList;
@@ -19,11 +20,16 @@ public class AccountService {
         if (number.isEmpty()) {
             return false;
         }
-        if (typeAccount == TypeAccountEnum.BONUS) {
-            BonusAccount bonus = new BonusAccount(number, 0.0);
-            this.accounts.add(bonus);
-        } else {
-            this.accounts.add(new AccountModel(number, 0.0));
+        switch (typeAccount) {
+            case BONUS:
+                this.accounts.add(new BonusAccount(number, 0.0));
+                break;
+            case SAVINGS:
+                this.accounts.add(new SavingsAccount(number, 0.0));
+                break;
+            default:
+                this.accounts.add(new AccountModel(number, 0.0));
+                break;
         }
         return true;
     }
@@ -83,6 +89,14 @@ public class AccountService {
             return true;
         }
         return false;
+    }
+
+    public void renderInterest(double percentageRate) {
+        for (AccountModel account : this.accounts) {
+            if (account instanceof SavingsAccount) {
+                ((SavingsAccount) account).renderInterest(percentageRate);
+            }
+        }
     }
 
 }
