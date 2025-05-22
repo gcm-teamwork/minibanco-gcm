@@ -23,9 +23,11 @@ class Main {
                 String number = "";
                 switch (option) {
                     case 1:
+                        System.out.println("Digite 1 para criar uma conta normal\nDigite 2 para conta bônus\nEscolha:");
+                        int typeAccount = scanner.nextInt();
                         System.out.println("Informe o número da conta para criar:");
                         number = scanner.next();
-                        String result = controller.createAccount(number);
+                        String result = controller.createAccount(number, typeAccount);
                         System.out.println(result);
                         break;
                     case 2:
