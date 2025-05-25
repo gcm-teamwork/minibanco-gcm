@@ -1,6 +1,9 @@
 package edu.ufrn.gcm.service;
 
 import edu.ufrn.gcm.model.AccountModel;
+import edu.ufrn.gcm.model.BonusAccount;
+import edu.ufrn.gcm.model.SavingsAccount;
+import edu.ufrn.gcm.utils.TypeAccountEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +16,21 @@ public class AccountService {
         this.accounts = new ArrayList<>();
     }
 
-    public boolean createAccount(String number) {
+    public boolean createAccount(String number, TypeAccountEnum typeAccount) {
         if (number.isEmpty()) {
             return false;
         }
-        this.accounts.add(new AccountModel(number, 0.0));
+        switch (typeAccount) {
+            case BONUS:
+                this.accounts.add(new BonusAccount(number, 0.0));
+                break;
+            case SAVINGS:
+                this.accounts.add(new SavingsAccount(number, 0.0));
+                break;
+            default:
+                this.accounts.add(new AccountModel(number, 0.0));
+                break;
+        }
         return true;
     }
 
@@ -35,6 +48,9 @@ public class AccountService {
         if (account != null && value != null) {
             if (value > 0) {
                 account.setTotal(account.getTotal() + value);
+                if (account instanceof BonusAccount) {
+                    calculateScore((BonusAccount) account, value, 100);
+                }
                 return true;
             }
         }
@@ -55,6 +71,12 @@ public class AccountService {
         return false;
     }
 
+    private void calculateScore(BonusAccount bonus, Double value, int baseValue) {
+        int debit = value.intValue();
+        int score = debit / baseValue;
+        bonus.increaseScore(score);
+    }
+
     public boolean transfer(String fromNumber, String toNumber, Double value) {
         AccountModel fromAccount = getAccountByNumber(fromNumber);
         AccountModel toAccount = getAccountByNumber(toNumber);
@@ -66,10 +88,21 @@ public class AccountService {
                 }
                 fromAccount.setTotal(fromAccount.getTotal() - value);
                 toAccount.setTotal(toAccount.getTotal() + value);
+                if (toAccount instanceof BonusAccount) {
+                    calculateScore((BonusAccount) toAccount, value, 200);
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    public void renderInterest(double percentageRate) {
+        for (AccountModel account : this.accounts) {
+            if (account instanceof SavingsAccount) {
+                ((SavingsAccount) account).renderInterest(percentageRate);
+            }
+        }
     }
 
 }

@@ -1,14 +1,16 @@
 package edu.ufrn.gcm.controller;
 
 import edu.ufrn.gcm.model.AccountModel;
+import edu.ufrn.gcm.model.BonusAccount;
 import edu.ufrn.gcm.service.AccountService;
+import edu.ufrn.gcm.utils.TypeAccountEnum;
 
 public class AccountController {
 
     private AccountService service = new AccountService();
 
-    public String createAccount(String number) {
-        boolean createWithSucces = service.createAccount(number);
+    public String createAccount(String number, int typeAccount) {
+        boolean createWithSucces = service.createAccount(number, getTypeAccount(typeAccount));
         if (createWithSucces) {
             return "Conta criada com sucesso!";
         } else {
@@ -19,7 +21,13 @@ public class AccountController {
     public String getAccountByNumber(String number) {
         AccountModel accountModel = this.service.getAccountByNumber(number);
         if (accountModel != null) {
-            return "O saldo da conta " + accountModel.getNumber() + " é R$" + accountModel.getTotal();
+            String accountData = "O saldo da conta " + accountModel.getNumber() + " é R$" + accountModel.getTotal();
+            if (accountModel instanceof BonusAccount) {
+                BonusAccount bonusAccount = (BonusAccount) accountModel;
+                String score = "A pontuação da conta é " + bonusAccount.getScore();
+                accountData += "\n" + score;
+            }
+            return accountData;
         }
         return "Conta não encontrada!";
     }
@@ -49,6 +57,22 @@ public class AccountController {
         } else {
             return "Erro ao realizar transferência. Verifique os dados informados.";
         }
+    }
+
+    private TypeAccountEnum getTypeAccount(int typeAccount) {
+        switch (typeAccount) {
+            case 2:
+                return TypeAccountEnum.BONUS;
+            case 3:
+                return TypeAccountEnum.SAVINGS;
+            default:
+                return TypeAccountEnum.REGULAR;
+        }
+    }
+
+    public String renderInterest(Double rate) {
+        service.renderInterest(rate);
+        return "Juros aplicados com sucesso em todas as contas poupança.";
     }
 
 }

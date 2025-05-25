@@ -10,11 +10,12 @@ class Main {
             AccountController controller = new AccountController();
             int option = -1;
             String menuOptions = "Olá, Seja Bem-vindo ao Minibanco\nEscolha uma das opções abaixo:\n" +
-                    "1 para Cadatrar conta\n" +
+                    "1 para Cadastrar conta\n" +
                     "2 para Consultar saldo de uma conta\n" +
                     "3 para Crédito\n" +
                     "4 para Débito\n" +
                     "5 para Transferência\n" +
+                    "6 para Render Juros (apenas poupança)\n" +
                     "0 para sair\nDigite: ";
 
             do {
@@ -23,9 +24,14 @@ class Main {
                 String number = "";
                 switch (option) {
                     case 1:
-                        System.out.println("Informe o número da conta para criar:");
+                        System.out.println("Digite 1 para conta normal");
+                        System.out.println("Digite 2 para conta bônus");
+                        System.out.println("Digite 3 para conta poupança");
+                        System.out.print("Escolha: ");
+                        int typeAccount = scanner.nextInt();
+                        System.out.print("Informe o número da conta para criar: ");
                         number = scanner.next();
-                        String result = controller.createAccount(number);
+                        String result = controller.createAccount(number, typeAccount);
                         System.out.println(result);
                         break;
                     case 2:
@@ -60,7 +66,13 @@ class Main {
                         String transferResult = controller.transfer(from, to, transferValue);
                         System.out.println(transferResult);
                         break;
-
+                    case 6:
+                        System.out.println("Informe a taxa de juros (ex: 10.5):");
+                        String taxaStr = scanner.next();
+                        Double taxa = Double.parseDouble(taxaStr.replace(",", "."));
+                        String jurosMsg = controller.renderInterest(taxa);
+                        System.out.println(jurosMsg);
+                        break;
                 }
 
             } while (option != 0);
