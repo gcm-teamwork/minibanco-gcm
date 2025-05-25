@@ -16,7 +16,7 @@ public class AccountService {
         this.accounts = new ArrayList<>();
     }
 
-    public boolean createAccount(String number, TypeAccountEnum typeAccount) {
+    public boolean createAccount(String number, double balance, TypeAccountEnum typeAccount) {
         if (number.isEmpty()) {
             return false;
         }
@@ -25,7 +25,7 @@ public class AccountService {
                 this.accounts.add(new BonusAccount(number, 0.0));
                 break;
             case SAVINGS:
-                this.accounts.add(new SavingsAccount(number, 0.0));
+                this.accounts.add(new SavingsAccount(number, balance));
                 break;
             default:
                 this.accounts.add(new AccountModel(number, 0.0));
