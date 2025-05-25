@@ -7,9 +7,9 @@ public class AccountController {
 
     private AccountService service = new AccountService();
 
-    public String createAccount(String number) {
-        boolean createWithSucces = service.createAccount(number);
-        if (createWithSucces) {
+    public String createAccount(String number, Double initialBalance) {
+        boolean createWithSuccess = service.createAccount(number, initialBalance);
+        if (createWithSuccess) {
             return "Conta criada com sucesso!";
         } else {
             return "Erro ao criar conta!";

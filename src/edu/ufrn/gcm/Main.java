@@ -25,7 +25,9 @@ class Main {
                     case 1:
                         System.out.println("Informe o número da conta para criar:");
                         number = scanner.next();
-                        String result = controller.createAccount(number);
+                        System.out.println("Informe o saldo inicial da conta:");
+                        Double initialBalance = scanner.nextDouble();
+                        String result = controller.createAccount(number, initialBalance);
                         System.out.println(result);
                         break;
                     case 2:
