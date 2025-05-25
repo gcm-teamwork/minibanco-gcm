@@ -13,11 +13,11 @@ public class AccountService {
         this.accounts = new ArrayList<>();
     }
 
-    public boolean createAccount(String number) {
-        if (number.isEmpty()) {
+    public boolean createAccount(String number, Double initialBalance) {
+        if (number.isEmpty() || initialBalance == null || initialBalance < 0) {
             return false;
         }
-        this.accounts.add(new AccountModel(number, 0.0));
+        this.accounts.add(new AccountModel(number, initialBalance));
         return true;
     }
 
