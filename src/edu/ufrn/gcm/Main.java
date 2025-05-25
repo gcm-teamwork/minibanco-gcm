@@ -31,7 +31,12 @@ class Main {
                         int typeAccount = scanner.nextInt();
                         System.out.print("Informe o número da conta para criar: ");
                         number = scanner.next();
-                        String result = controller.createAccount(number, typeAccount);
+                        double balance = 0;
+                        if (typeAccount == 3) {
+                            System.out.print("Informe o saldo da conta: ");
+                            balance = scanner.nextDouble();
+                        }
+                        String result = controller.createAccount(number, balance, typeAccount);
                         System.out.println(result);
                         break;
                     case 2:
