@@ -31,12 +31,12 @@ class Main {
                         int typeAccount = scanner.nextInt();
                         System.out.print("Informe o número da conta para criar: ");
                         number = scanner.next();
-                        double balance = 0;
-                        if (typeAccount == 3) {
-                            System.out.print("Informe o saldo da conta: ");
-                            balance = scanner.nextDouble();
+                        Double initialBalance = 0.0;
+                        if (typeAccount == 1 || typeAccount == 3) {
+                            System.out.println("Informe o saldo inicial da conta:");
+                            initialBalance = scanner.nextDouble();
                         }
-                        String result = controller.createAccount(number, balance, typeAccount);
+                        String result = controller.createAccount(number, typeAccount, initialBalance);
                         System.out.println(result);
                         break;
                     case 2:
