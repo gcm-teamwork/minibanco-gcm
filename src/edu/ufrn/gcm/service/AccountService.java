@@ -89,7 +89,7 @@ public class AccountService {
                 fromAccount.setTotal(fromAccount.getTotal() - value);
                 toAccount.setTotal(toAccount.getTotal() + value);
                 if (toAccount instanceof BonusAccount) {
-                    calculateScore((BonusAccount) toAccount, value, 200);
+                    calculateScore((BonusAccount) toAccount, value, 150);
                 }
                 return true;
             }
