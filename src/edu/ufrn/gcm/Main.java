@@ -10,7 +10,7 @@ class Main {
             AccountController controller = new AccountController();
             int option = -1;
             String menuOptions = "Olá, Seja Bem-vindo ao Minibanco\nEscolha uma das opções abaixo:\n" +
-                    "1 para Cadastrar conta\n" +
+                    "1 para Cadatrar conta\n" +
                     "2 para Consultar saldo de uma conta\n" +
                     "3 para Crédito\n" +
                     "4 para Débito\n" +
@@ -31,7 +31,12 @@ class Main {
                         int typeAccount = scanner.nextInt();
                         System.out.print("Informe o número da conta para criar: ");
                         number = scanner.next();
-                        String result = controller.createAccount(number, typeAccount);
+                        Double initialBalance = 0.0;
+                        if (typeAccount == 1) {
+                            System.out.println("Informe o saldo inicial da conta:");
+                            initialBalance = scanner.nextDouble();
+                        }
+                        String result = controller.createAccount(number, typeAccount, initialBalance);
                         System.out.println(result);
                         break;
                     case 2:

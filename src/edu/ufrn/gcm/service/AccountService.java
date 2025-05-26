@@ -16,19 +16,19 @@ public class AccountService {
         this.accounts = new ArrayList<>();
     }
 
-    public boolean createAccount(String number, TypeAccountEnum typeAccount) {
-        if (number.isEmpty()) {
+    public boolean createAccount(String number, TypeAccountEnum typeAccount, Double initialBalance) {
+        if (number.isEmpty() || initialBalance == null || initialBalance < 0) {
             return false;
         }
         switch (typeAccount) {
             case BONUS:
-                this.accounts.add(new BonusAccount(number, 0.0));
+                this.accounts.add(new BonusAccount(number, initialBalance));
                 break;
             case SAVINGS:
-                this.accounts.add(new SavingsAccount(number, 0.0));
+                this.accounts.add(new SavingsAccount(number, initialBalance));
                 break;
             default:
-                this.accounts.add(new AccountModel(number, 0.0));
+                this.accounts.add(new AccountModel(number, initialBalance));
                 break;
         }
         return true;
