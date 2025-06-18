@@ -7,7 +7,6 @@ import edu.ufrn.gcm.utils.TypeAccountEnum;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class AccountService {
 
     private List<AccountModel> accounts;
@@ -61,14 +60,29 @@ public class AccountService {
         AccountModel account = getAccountByNumber(number);
         if (account != null && value != null) {
             if (value > 0) {
-                if (value > account.getTotal()) {
-                    return false;
+                if (account instanceof SavingsAccount) {
+                    if (value > account.getTotal()) {
+                        return false;
+                    } else {
+                        account.setTotal(account.getTotal() - value);
+                        return true;
+                    }
+                } else {
+                    if (validateBalance(account, value)) {
+                        account.setTotal(account.getTotal() - value);
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-                account.setTotal(account.getTotal() - value);
-                return true;
             }
         }
         return false;
+    }
+
+    private boolean validateBalance(AccountModel account, double value) {
+        Double balance = account.getTotal() - value;
+        return balance >= -1000;
     }
 
     private void calculateScore(BonusAccount bonus, Double value, int baseValue) {
@@ -83,15 +97,29 @@ public class AccountService {
 
         if (fromAccount != null && toAccount != null && value != null) {
             if (value > 0) {
-                if (value > fromAccount.getTotal()) {
-                    return false;
+                if (fromAccount instanceof SavingsAccount) {
+                    if (value > fromAccount.getTotal()) {
+                        return false;
+                    } else {
+                        fromAccount.setTotal(fromAccount.getTotal() - value);
+                        toAccount.setTotal(toAccount.getTotal() + value);
+                        if (toAccount instanceof BonusAccount) {
+                            calculateScore((BonusAccount) toAccount, value, 150);
+                        }
+                        return true;
+                    }
+                } else {
+                    if (validateBalance(toAccount, value)) {
+                        fromAccount.setTotal(fromAccount.getTotal() - value);
+                        toAccount.setTotal(toAccount.getTotal() + value);
+                        if (toAccount instanceof BonusAccount) {
+                            calculateScore((BonusAccount) toAccount, value, 150);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-                fromAccount.setTotal(fromAccount.getTotal() - value);
-                toAccount.setTotal(toAccount.getTotal() + value);
-                if (toAccount instanceof BonusAccount) {
-                    calculateScore((BonusAccount) toAccount, value, 150);
-                }
-                return true;
             }
         }
         return false;
@@ -103,6 +131,10 @@ public class AccountService {
                 ((SavingsAccount) account).renderInterest(percentageRate);
             }
         }
+    }
+
+    public List<AccountModel> getAllAccounts() {
+        return accounts;
     }
 
 }
