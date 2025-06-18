@@ -7,7 +7,7 @@ Este projeto tem como objetivo simular o funcionamento básico de uma conta banc
 - Ana Maria Gomes Holanda, github `@anamgholandadev`
 
 ## Linguagem de Programação
-No projeto, é utilizado a linguagem de programação Java. O frontend será via console.
+No projeto, é utilizado a linguagem de programação Java com Spring Boot.
 
 ### Requisitos
 - Java 19+.
