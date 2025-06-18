@@ -4,7 +4,7 @@ import edu.ufrn.gcm.dto.AmountDTO;
 import edu.ufrn.gcm.dto.CreateAccountDTO;
 import edu.ufrn.gcm.dto.InterestDTO;
 import edu.ufrn.gcm.dto.TransferDTO;
-import edu.ufrn.gcm.model.AccountModel; 
+import edu.ufrn.gcm.model.AccountModel;
 import edu.ufrn.gcm.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
