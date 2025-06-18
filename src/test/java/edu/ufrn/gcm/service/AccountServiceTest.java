@@ -136,10 +136,21 @@ public class AccountServiceTest {
 
     // Render Juros
     @Test
-    void testRenderInterestForSavingsAccount() {
+    void testRenderInterestForMultipleSavingsAccounts() {
         service.createAccount("018", TypeAccountEnum.SAVINGS, 1000.0);
+        service.createAccount("019", TypeAccountEnum.SAVINGS, 500.0);
+        service.createAccount("020", TypeAccountEnum.BONUS, 2000.0);
+
         service.renderInterest(10.0);
-        SavingsAccount acc = (SavingsAccount) service.getAccountByNumber("018");
-        assertEquals(1100.0, acc.getTotal());
+
+        SavingsAccount acc1 = (SavingsAccount) service.getAccountByNumber("018");
+        SavingsAccount acc2 = (SavingsAccount) service.getAccountByNumber("019");
+
+        assertEquals(1100.0, acc1.getTotal());
+        assertEquals(550.0, acc2.getTotal());
+
+        BonusAccount bonusAcc = (BonusAccount) service.getAccountByNumber("020");
+        assertEquals(2000.0, bonusAcc.getTotal());
     }
+
 }
