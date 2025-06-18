@@ -2,6 +2,7 @@ package edu.ufrn.gcm.controller;
 
 import edu.ufrn.gcm.model.AccountModel;
 import edu.ufrn.gcm.model.BonusAccount;
+import edu.ufrn.gcm.model.SavingsAccount;
 import edu.ufrn.gcm.service.AccountService;
 import edu.ufrn.gcm.utils.TypeAccountEnum;
 
@@ -68,6 +69,34 @@ public class AccountController {
             default:
                 return TypeAccountEnum.REGULAR;
         }
+    }
+
+    public String getFullAccountData(String number) {
+        AccountModel accountModel = this.service.getAccountByNumber(number);
+        if (accountModel != null) {
+            StringBuilder accountData = new StringBuilder();
+
+            String type;
+            if (accountModel instanceof BonusAccount) {
+                type = "Bônus";
+            } else if (accountModel instanceof SavingsAccount) {
+                type = "Poupança";
+            } else {
+                type = "Regular";
+            }
+
+            accountData.append("Tipo: ").append(type);
+            accountData.append("\nNúmero: ").append(accountModel.getNumber());
+            accountData.append("\nSaldo: R$").append(String.format("%.2f", accountModel.getTotal()));
+
+            if (accountModel instanceof BonusAccount) {
+                BonusAccount bonusAccount = (BonusAccount) accountModel;
+                accountData.append("\nBônus (Score): ").append(bonusAccount.getScore());
+            }
+
+            return accountData.toString();
+        }
+        return "Conta não encontrada!";
     }
 
     public String renderInterest(Double rate) {
