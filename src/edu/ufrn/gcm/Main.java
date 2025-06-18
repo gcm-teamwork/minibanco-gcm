@@ -16,6 +16,7 @@ class Main {
                     "4 para Débito\n" +
                     "5 para Transferência\n" +
                     "6 para Render Juros (apenas poupança)\n" +
+                    "7 para Consultar dados completos da conta\n" +
                     "0 para sair\nDigite: ";
 
             do {
@@ -77,6 +78,12 @@ class Main {
                         Double taxa = Double.parseDouble(taxaStr.replace(",", "."));
                         String jurosMsg = controller.renderInterest(taxa);
                         System.out.println(jurosMsg);
+                        break;
+                    case 7:
+                        System.out.println("Informe o número da conta para consultar os dados completos:");
+                        number = scanner.next();
+                        String fullData = controller.getFullAccountData(number);
+                        System.out.println(fullData);
                         break;
                 }
 
