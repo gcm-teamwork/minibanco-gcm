@@ -27,11 +27,11 @@ jobs:
       - name: Instalar dependências (mvn clean install)
         run: mvn clean install -DskipTests=true
 
-      - name: Compilar o projeto
-        run: mvn spring-boot:run
-
       - name: Executar testes
         run: mvn test
+
+      - name: Compilar o projeto
+        run: mvn -B package -DskipTests=true --file pom.xml
 
       - name: Criar tag de build
         if: github.ref == 'refs/heads/main'
