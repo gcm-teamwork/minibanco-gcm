@@ -1,5 +1,6 @@
 package edu.ufrn.gcm.service;
 
+import edu.ufrn.gcm.dto.AccountInfoDTO;
 import edu.ufrn.gcm.model.*;
 import edu.ufrn.gcm.utils.TypeAccountEnum;
 import org.junit.jupiter.api.BeforeEach;
@@ -151,6 +152,48 @@ public class AccountServiceTest {
 
         BonusAccount bonusAcc = (BonusAccount) service.getAccountByNumber("020");
         assertEquals(2000.0, bonusAcc.getTotal());
+    }
+
+    // Mapeamento para DTO (Consulta de Informações Completas da Conta)
+
+    @Test
+    void testDTOFromRegularAccount() {
+        service.createAccount("021", TypeAccountEnum.REGULAR, 500.0);
+        AccountModel acc = service.getAccountByNumber("021");
+
+        AccountInfoDTO dto = AccountMapper.toDTO(acc);
+
+        assertEquals("REGULAR", dto.getType());
+        assertEquals("021", dto.getNumber());
+        assertEquals(500.0, dto.getBalance());
+        assertNull(dto.getScore());
+    }
+
+    @Test
+    void testDTOFromBonusAccount() {
+        service.createAccount("022", TypeAccountEnum.BONUS, 1000.0);
+        BonusAccount acc = (BonusAccount) service.getAccountByNumber("022");
+        acc.setScore(20); // simular pontuação
+
+        AccountInfoDTO dto = AccountMapper.toDTO(acc);
+
+        assertEquals("BÔNUS", dto.getType());
+        assertEquals("022", dto.getNumber());
+        assertEquals(1000.0, dto.getBalance());
+        assertEquals(20, dto.getScore());
+    }
+
+    @Test
+    void testDTOFromSavingsAccount() {
+        service.createAccount("023", TypeAccountEnum.SAVINGS, 800.0);
+        SavingsAccount acc = (SavingsAccount) service.getAccountByNumber("023");
+
+        AccountInfoDTO dto = AccountMapper.toDTO(acc);
+
+        assertEquals("POUPANÇA", dto.getType());
+        assertEquals("023", dto.getNumber());
+        assertEquals(800.0, dto.getBalance());
+        assertNull(dto.getScore());
     }
 
 }
