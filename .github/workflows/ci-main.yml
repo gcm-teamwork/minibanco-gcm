@@ -34,7 +34,6 @@ jobs:
         run: mvn -B package -DskipTests=true --file pom.xml
 
       - name: Criar tag de build
-        if: github.ref == 'refs/heads/main'
         run: |
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
           TAG_NAME="${TAG_PREFIX}${TIMESTAMP}"
