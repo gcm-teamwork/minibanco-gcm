@@ -1,0 +1,46 @@
+name: CI - Main Branch
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      JAVA_VERSION: '19'
+      TAG_PREFIX: 'build-'
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Instalar dependências (mvn clean install)
+        run: mvn clean install -DskipTests=true
+
+      - name: Executar testes
+        run: mvn test
+
+      - name: Compilar o projeto
+        run: mvn -B package -DskipTests=true --file pom.xml
+
+      - name: Criar tag de build
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          TAG_NAME="${TAG_PREFIX}${TIMESTAMP}"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
