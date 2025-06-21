@@ -25,13 +25,13 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Instalar dependências (mvn clean install)
-        run: ./mvnw clean install -DskipTests
+        run: mvn clean install -DskipTests=true
 
       - name: Compilar o projeto
-        run: ./mvnw spring-boot:run
+        run: mvn spring-boot:run
 
       - name: Executar testes
-        run: ./mvnw test
+        run: mvn test
 
       - name: Criar tag de build
         if: github.ref == 'refs/heads/main'
