@@ -21,7 +21,7 @@
     <description>Projeto de API bancária com Spring Boot</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>19</java.version>
     </properties>
 
     <dependencies>
@@ -51,8 +51,25 @@
                     <mainClass>edu.ufrn.gcm.MiniBancoApplication</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.21.2</version>
+            <configuration>
+                <targetJdk>19</targetJdk> 
+                <printFailingErrors>true</printFailingErrors>
+                <failOnViolation>true</failOnViolation> 
+            </configuration>
+            <executions>
+                <!-- <execution>
+                <phase>verify</phase>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+                </execution> -->
+            </executions>
+            </plugin>
         </plugins>
-
     </build>
 
 </project>

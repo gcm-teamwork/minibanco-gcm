@@ -1,0 +1,89 @@
+name: CI - Staging Branch
+
+on:
+  push:
+    branches: [ staging ]
+  pull_request:
+    branches: [ staging ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      JAVA_VERSION: '19'
+      TAG_PREFIX: 'build-'
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Instalar dependências 
+        run: mvn clean install -DskipTests=true
+
+      - name: Compilar o projeto
+        run: mvn -B package -DskipTests=true --file pom.xml
+
+      - name: Analisar código com PMD
+        run: mvn pmd:check
+      
+      - name: Executar testes
+        run: mvn test
+
+      - name: Obter última tag
+        id: tag
+        run: |
+          TAG=$(git tag --sort=-creatordate | grep '^rc-' | head -n 1)
+          echo "Última tag: $TAG"
+          echo "tag_anterior=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Calcular nova tag
+        id: version
+        run: |
+          TAG=${{ steps.tag.outputs.tag_anterior }}
+          NUMERO=$(echo $TAG | sed 's/^rc-//' | awk -F. '{print $1 "." $2}')
+          MAJOR=$(echo $NUMERO | cut -d. -f1)
+          MINOR=$(echo $NUMERO | cut -d. -f2)
+
+          if [ "$MINOR" -lt 9 ]; then
+            NEW_MINOR=$((MINOR + 1))
+            NEW_MAJOR=$MAJOR
+          else
+            NEW_MINOR=0
+            NEW_MAJOR=$((MAJOR + 1))
+          fi
+
+          NOVA_TAG="rc-${NEW_MAJOR}.${NEW_MINOR}"
+          echo "Nova tag: $NOVA_TAG"
+          echo "nova_tag=$NOVA_TAG" >> $GITHUB_OUTPUT
+
+      - name: Criar tag de build
+        if: github.ref_name == 'main' && github.event_name == 'push'
+        run: |
+           git config --global user.name "github-actions"
+           git config --global user.email "actions@github.com"
+           git tag ${{ steps.version.outputs.nova_tag }}
+           git push origin ${{ steps.version.outputs.nova_tag }}
+
+      - name: Criar arquivo ZIP com nome da tag
+        run: |
+          TAG_NAME=${{ steps.version.outputs.nova_tag }}
+          mkdir -p workflow/artifacts
+          zip -r workflow/artifacts/${TAG_NAME}.zip target/
+
+      - name: Fazer upload do artefato ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version.outputs.nova_tag }}
+          path: workflow/artifacts/${{ steps.version.outputs.nova_tag }}.zip
