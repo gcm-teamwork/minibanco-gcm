@@ -51,8 +51,25 @@
                     <mainClass>edu.ufrn.gcm.MiniBancoApplication</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>3.21.2</version>
+            <configuration>
+                <targetJdk>17</targetJdk> 
+                <printFailingErrors>true</printFailingErrors>
+                <failOnViolation>true</failOnViolation> 
+            </configuration>
+            <executions>
+                <execution>
+                <phase>verify</phase>
+                <goals>
+                    <goal>check</goal>
+                </goals>
+                </execution>
+            </executions>
+            </plugin>
         </plugins>
-
     </build>
 
 </project>
