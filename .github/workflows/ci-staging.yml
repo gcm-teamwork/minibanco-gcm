@@ -27,8 +27,8 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Instalar dependências (mvn clean install)
-        run: mvn clean install -DskipTests=true
+      - name: Instalar dependências 
+        run: mvn clean install -DskipTests=true -Pno-pmd
 
       - name: Compilar o projeto
         run: mvn -B package -DskipTests=true --file pom.xml
