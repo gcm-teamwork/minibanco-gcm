@@ -74,7 +74,7 @@ jobs:
            git tag ${{ steps.version.outputs.nova_tag }}
            git push origin ${{ steps.version.outputs.nova_tag }}
 
-            - name: Criar arquivo ZIP com nome da tag
+      - name: Criar arquivo ZIP com nome da tag
         run: |
           TAG_NAME=${{ steps.version.outputs.nova_tag }}
           mkdir -p workflow/artifacts
