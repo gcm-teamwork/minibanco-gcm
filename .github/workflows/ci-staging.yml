@@ -30,7 +30,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Instalar dependências 
-        run: mvn clean install -DskipTests=true -Pno-pmd
+        run: mvn clean install -DskipTests=true
 
       - name: Compilar o projeto
         run: mvn -B package -DskipTests=true --file pom.xml
