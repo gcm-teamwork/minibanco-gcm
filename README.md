@@ -11,37 +11,84 @@ No projeto, é utilizado a linguagem de programação Java com Spring Boot.
 
 ### Requisitos
 - Java 19+.
+- Docker
+- Postman ou Insomnia
 
-### Executar projeto via terminal
+### Executar projeto com Docker
 
-1. Abra o terminal e execute os comandos abaixos:
-
-```
-    cd minibanco-gcm/src && javac -d ../bin $(find . -name "*.java") && cd ..
-```
-
-2. Agora execute o comando para criar o .jar
+Rode os comandos abaixo:
 
 ```
-    jar cfm minibanco.jar src/META-INF/MANIFEST.MF -C bin/ .
+docker pull gabrielerego/minibanco-gcm:1.0 && docker run -p 8080:8080 gabrielerego/minibanco-gcm:1.0
 ```
 
-3. Execute o .jar
+[Clique aqui para acessar a imagem do projeto no repositório docker hub](https://hub.docker.com/r/gabrielerego/minibanco-gcm)
 
+### Como chamar endpoints
+
+- Retorna todas as contas
 ```
-    java -jar minibanco.jar
+curl --request GET \
+  --url http://localhost:8080/banco/conta \
+  --header 'User-Agent: insomnia/9.3.0'
 ```
-
-### Executar projeto via Intellij IDEA
-
-1. Abra o IntelliJ e clique em `File > Open`, depois selecione a pasta do projeto.
-2. Clique com o botão direito na classe **Main.java** que está em `src/edu/ufrn/gcm`, e selecione `Run 'main'`.
-3. A saída aparecerá no terminal inferior da IDE.
-
-### Executar projeto via Eclipse
-
-1. Abra o Eclipse.
-2. Vá em `File > Import > Existing Projects into Workspace`.
-3. Selecione a pasta do projeto.
-4. No Package Explorer, clique com o botão direito na classe **Main.java** que está em `src/edu/ufrn/gcm`
-   e escolha `Run As > Java Application`.
+- Criação de conta
+```
+curl --request POST \
+  --url http://localhost:8080/banco/conta \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.3.0' \
+  --data '{
+  "number": "123",
+  "type": "SAVINGS",
+  "initialBalance": 100.0
+}'
+```
+- Transferência
+```
+curl --request PUT \
+  --url http://localhost:8080/banco/conta/transferencia \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.3.0' \
+  --data '{
+  "from": "123",
+  "to": "1234",
+  "amount": 40.0
+}'
+```
+- Crédito
+```
+curl --request PUT \
+  --url http://localhost:8080/banco/conta/123/credito \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.3.0' \
+  --data '{
+  "amount": 50.0
+}'
+```
+- Débito
+```
+curl --request PUT \
+  --url http://localhost:8080/banco/conta/123/debito \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.3.0' \
+  --data '
+{
+  "amount": 10.0
+}'
+```
+- Saldo da conta
+```
+curl --location 'http://localhost:8080/banco/conta/123/saldo' \
+--header 'User-Agent: insomnia/9.3.0'
+```
+- Rendimento
+```
+curl --request PUT \
+  --url http://localhost:8080/banco/conta/rendimento \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.3.0' \
+  --data '{
+  "rate": 10.5
+}'
+```

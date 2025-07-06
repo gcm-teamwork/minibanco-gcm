@@ -1,0 +1,98 @@
+name: CI - Production Branch
+
+on:
+  push:
+    branches: [ production ]
+  pull_request:
+    branches: [ production ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      JAVA_VERSION: '19'
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Instalar dependências
+        run: mvn clean install -DskipTests=true
+
+      - name: Compilar o projeto
+        run: mvn -B package -DskipTests=true --file pom.xml
+
+      - name: Analisar código com PMD
+        run: mvn pmd:check
+
+      - name: Executar testes
+        run: mvn test
+
+      - name: Obter última tag rc-x.y
+        id: tag_rc
+        run: |
+          TAG_RC=$(git tag --sort=-creatordate | grep '^rc-' | head -n 1)
+          echo "Última tag RC: $TAG_RC"
+          echo "tag_rc=$TAG_RC" >> $GITHUB_OUTPUT
+
+      - name: Calcular nova tag rel-x.y com y incremental
+        id: version
+        run: |
+          TAG_RC=${{ steps.tag_rc.outputs.tag_rc }}
+          X=$(echo "$TAG_RC" | sed 's/^rc-//' | cut -d. -f1)
+
+          # Buscar maior valor de Y das tags rel-X.Y existentes
+          MAX_Y=$(git tag | grep "^rel-${X}\." | sed "s/^rel-${X}\.//" | sort -nr | head -n 1)
+          if [ -z "$MAX_Y" ]; then
+            Y=0
+          else
+            Y=$((MAX_Y + 1))
+          fi
+
+          NEW_TAG="rel-${X}.${Y}"
+          echo "Nova tag de release: $NEW_TAG"
+          echo "nova_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Criar tag de release
+        if: github.ref_name == 'production' && github.event_name == 'push'
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git tag ${{ steps.version.outputs.nova_tag }}
+          git push origin ${{ steps.version.outputs.nova_tag }}
+
+      - name: Criar arquivo ZIP com nome da tag
+        run: |
+          TAG_NAME=${{ steps.version.outputs.nova_tag }}
+          mkdir -p workflow/artifacts
+          zip -r workflow/artifacts/${TAG_NAME}.zip target/
+
+      - name: Fazer upload do artefato ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version.outputs.nova_tag }}
+          path: workflow/artifacts/${{ steps.version.outputs.nova_tag }}.zip
+
+      - name: Login no Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build da imagem Docker
+        run: docker build -t minibanco-gcm:1.0 .
+
+      - name: Tag da imagem para o Docker Hub
+        run: docker tag minibanco-gcm:1.0 ${{ secrets.DOCKER_HUB_USERNAME }}/minibanco-gcm:1.0
+
+      - name: Push da imagem para o Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/minibanco-gcm:1.0
