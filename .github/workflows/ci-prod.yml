@@ -35,7 +35,7 @@ jobs:
         run: mvn -B package -DskipTests=true --file pom.xml
 
       - name: Analisar código com PMD
-        run: mvn pmd:check
+          run: mvn pmd:check
 
       - name: Executar testes
         run: mvn test
