@@ -62,7 +62,7 @@ public class AccountService {
         if (account != null && value != null) {
             if (value > 0) {
                 if (account instanceof SavingsAccount) {
-                    if (value > account.getTotal()) {
+                    if (value > account.getTotal()) 
                         return false;
                     } else {
                         account.setTotal(account.getTotal() - value);
@@ -77,8 +77,8 @@ public class AccountService {
                     }
                 }
             }
-        }
-        return false;
+        }return false;
+
     }
 
     private boolean validateBalance(AccountModel account, double value) {
