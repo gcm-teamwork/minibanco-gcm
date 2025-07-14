@@ -7,6 +7,7 @@ import edu.ufrn.gcm.utils.TypeAccountEnum;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class AccountService {
 
     private List<AccountModel> accounts;
@@ -18,7 +19,7 @@ public class AccountService {
     public boolean createAccount(String number, TypeAccountEnum typeAccount, Double initialBalance) {
         if (number.isEmpty() || initialBalance == null || initialBalance < 0) {
             return false;
-        }
+    
         switch (typeAccount) {
             case BONUS:
                 this.accounts.add(new BonusAccount(number, initialBalance));
