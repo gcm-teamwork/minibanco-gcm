@@ -19,7 +19,7 @@ public class AccountService {
     public boolean createAccount(String number, TypeAccountEnum typeAccount, Double initialBalance) {
         if (number.isEmpty() || initialBalance == null || initialBalance < 0) {
             return false;
-    
+        }
         switch (typeAccount) {
             case BONUS:
                 this.accounts.add(new BonusAccount(number, initialBalance));
