@@ -70,7 +70,7 @@ public class AccountService {
                     }
                 } else {
                     if (validateBalance(account, value)) {
-                        account.setTotal(account.getTotal() - value);
+                        account.setTotal(0.0);
                         return true;
                     } else {
                         return false;
