@@ -74,7 +74,7 @@ public class AccountService {
 
     private boolean validateBalance(AccountModel account, double value) {
         Double balance = account.getTotal() - value;
-        return balance >= -1000;
+        return balance >= -2000;
     }
 
     private void calculateScore(BonusAccount bonus, Double value, int baseValue) {
