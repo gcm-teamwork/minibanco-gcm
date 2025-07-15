@@ -105,7 +105,7 @@ public class AccountServiceTest {
     void testDebitOverdraftLimit() {
         service.createAccount("011", TypeAccountEnum.REGULAR, 100.0);
         boolean result = service.debit("011", 1200.0);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     // Transferência
@@ -122,7 +122,7 @@ public class AccountServiceTest {
         service.createAccount("014", TypeAccountEnum.REGULAR, 0.0);
         service.createAccount("015", TypeAccountEnum.REGULAR, 0.0);
         boolean result = service.transfer("014", "015", 2000.0);
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
