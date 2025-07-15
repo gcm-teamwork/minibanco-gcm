@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountService {
-
+    // Teste Qualidade
     private List<AccountModel> accounts;
 
     public AccountService() {
@@ -45,29 +45,37 @@ public class AccountService {
 
     public boolean credit(String number, Double value) {
         AccountModel account = getAccountByNumber(number);
-        if (account != null && value != null && value > 0) {
-            account.setTotal(account.getTotal() + value);
-            if (account instanceof BonusAccount) {
-                calculateScore((BonusAccount) account, value, 100);
+        if (account != null && value != null) {
+            if (value > 0) {
+                account.setTotal(account.getTotal() + value);
+                if (account instanceof BonusAccount) {
+                    calculateScore((BonusAccount) account, value, 100);
+                }
+                return true;
             }
-            return true;
         }
-
         return false;
     }
 
     public boolean debit(String number, Double value) {
         AccountModel account = getAccountByNumber(number);
-        if (account != null && value != null && value > 0) {
-            if (account instanceof SavingsAccount) {
-                if (value > account.getTotal()) {
-                    return false;
+        if (account != null && value != null) {
+            if (value > 0) {
+                if (account instanceof SavingsAccount) {
+                    if (value > account.getTotal()) {
+                        return false;
+                    } else {
+                        account.setTotal(account.getTotal() - value);
+                        return true;
+                    }
+                } else {
+                    if (validateBalance(account, value)) {
+                        account.setTotal(account.getTotal() - value);
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-                account.setTotal(account.getTotal() - value);
-                return true;
-            } else if (validateBalance(account, value)) {
-                account.setTotal(account.getTotal() - value);
-                return true;
             }
         }
         return false;
@@ -88,24 +96,31 @@ public class AccountService {
         AccountModel fromAccount = getAccountByNumber(fromNumber);
         AccountModel toAccount = getAccountByNumber(toNumber);
 
-        if (fromAccount != null && toAccount != null && value != null && value > 0) {
-            if (fromAccount instanceof SavingsAccount) {
-                if (value > fromAccount.getTotal()) {
-                    return false;
+        if (fromAccount != null && toAccount != null && value != null) {
+            if (value > 0) {
+                if (fromAccount instanceof SavingsAccount) {
+                    if (value > fromAccount.getTotal()) {
+                        return false;
+                    } else {
+                        fromAccount.setTotal(fromAccount.getTotal() - value);
+                        toAccount.setTotal(toAccount.getTotal() + value);
+                        if (toAccount instanceof BonusAccount) {
+                            calculateScore((BonusAccount) toAccount, value, 150);
+                        }
+                        return true;
+                    }
+                } else {
+                    if (validateBalance(toAccount, value)) {
+                        fromAccount.setTotal(fromAccount.getTotal() - value);
+                        toAccount.setTotal(toAccount.getTotal() + value);
+                        if (toAccount instanceof BonusAccount) {
+                            calculateScore((BonusAccount) toAccount, value, 150);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-                fromAccount.setTotal(fromAccount.getTotal() - value);
-                toAccount.setTotal(toAccount.getTotal() + value);
-                if (toAccount instanceof BonusAccount) {
-                    calculateScore((BonusAccount) toAccount, value, 150);
-                }
-                return true;
-            } else if (validateBalance(toAccount, value)) {
-                fromAccount.setTotal(fromAccount.getTotal() - value);
-                toAccount.setTotal(toAccount.getTotal() + value);
-                if (toAccount instanceof BonusAccount) {
-                    calculateScore((BonusAccount) toAccount, value, 150);
-                }
-                return true;
             }
         }
         return false;
